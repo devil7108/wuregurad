@@ -1,1 +1,2 @@
-# wuregurad
+# wiregurad.sh
+
