@@ -5,7 +5,7 @@ update_kernel(){
                  
                  yum -y update
                  yum -y elrepo-release
-                 yum -y install firewalld net-tools curl git wget vim brew rar qrencode make losf libreswan Networkmanager glibc
+                 yum -y install firewalld net-tools curl git wget vim qrencode make losf libreswan Networkmanager glibc
                  
 sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
 yum remove -y kernel-devel
@@ -85,20 +85,14 @@ l=$(ls /sys/class/net | awk '/^e/{print}')
 
 firewall-cmd --set-default-zone=public
 firewall-cmd --add-interface=$ETH
-firewall-cmd --add-interface=$L
+firewall-cmd --zone=public --add-interface=wg0
 firewall-cmd --add-port=1701/udp --permanent
 firewall-cmd --add-port=4500/udp --permanent
 firewall-cmd --add-port=500/udp --permanent
 firewall-cmd --add-masquerade --permanent
 firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -i $ETH -p gre -j ACCEPT
 firewall-cmd --permanent --direct --add-rule ipv6 filter INPUT 0 -i $ETH -p gre -j ACCEPT
-firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -i $L -p gre -j ACCEPT
-firewall-cmd --permanent --direct --add-rule ipv6 filter INPUT 0 -i $L -p gre -j ACCEPT
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUER
-firewall-cmd --permanent --direct --passthrough ipv6 -t nat -I POSTROUTING -o eth0 -j MASQUER
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o l0 -j MASQUER
-firewall-cmd --permanent --direct --passthrough ipv6 -t nat -I POSTROUTING -o l0 -j MASQUER
-firewall-cmd --permanent --add-port=0-65535/tcp --zone=public
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.8.6.18/24
 firewall-cmd --permanent --add-port=0-65535/udp --zone=public
 firewall-cmd --reload
 
@@ -146,7 +140,7 @@ modprobe wireguard
 
 content=$(cat /etc/wireguard/client.conf)
 echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
-echo "${content}" | qrencode -o -t UTF8
+echo "${content}" | qrencode -o --t UTF8
 
 }
 
@@ -239,4 +233,4 @@ start_menu
 4. 卸载wireguard
 5. 显示客户端二维码
 6. 增长用户
-0. 退出脚本 
+0. 退出js
