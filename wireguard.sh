@@ -45,7 +45,7 @@ echo "卸载完成"
 }
 
 config_client(){
-cat > /etc/wireguard/client.conf >>EOF
+cat > /etc/wireguard/client.conf <<-EOF
 [Interface]
 PrivateKey = $c1
 Address = 10.0.0.2/24 
@@ -65,39 +65,54 @@ EOF
 
 wireguard_install(){
 
-curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-8/jdoss-wireguard-epel-8.repo
-yum install -y gcc-c++ gcc-gfortran glibc glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel bash-completion
-yum install wireguard-dkms wireguard-tools kmod-wireguard dkms
+curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-8/jdoss-wireguard-epel-8.repo
+
+yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel qrencode wget git bash-completion
+
+yum install wireguard-dkms wireguard-tools kmod-wireguard
+
 mkdir /etc/wireguard
-chmod +777 /etc/wireguard
+
 cd /etc/wireguard
+
 wg genkey | tee sprivatekey | wg pubkey > spublickey
+
 wg genkey | tee cprivatekey | wg pubkey > cpublickey
 
 s1=$(cat sprivatekey)
-s2=$(cat spublickey)
-c1=$(cat cprivatekey)
-c2=$(cat cpublickey)
-serverip=$(curl ipv4.icanhazip.com)
-port=$(rand 10000 60000)
-eth=$(ls /sys/class/net | awk '/^e/{print}')
-l=$(ls /sys/class/net | awk '/^e/{print}')
 
-firewall-cmd --set-default-zone=public
-firewall-cmd --add-interface=$ETH
-firewall-cmd --zone=public --add-interface=wg0
-firewall-cmd --add-port=1701/udp --permanent
-firewall-cmd --add-port=4500/udp --permanent
-firewall-cmd --add-port=500/udp --permanent
-firewall-cmd --add-masquerade --permanent
-firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -i $ETH -p gre -j ACCEPT
-firewall-cmd --permanent --direct --add-rule ipv6 filter INPUT 0 -i $ETH -p gre -j ACCEPT
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.8.6.18/24
-firewall-cmd --permanent --add-port=0-65535/udp --zone=public
-firewall-cmd --reload
+s2=$(cat spublickey)
+
+c1=$(cat cprivatekey)
+
+c2=$(cat cpublickey)
+
+serverip=$(curl ipv4.icanhazip.com)
+
+port=$(rand 10000 60000)
+
+eth=$(ls /sys/class/net | awk '/^e/{print}')
+
+chmod 777 -R /etc/wireguard
 
 systemctl enable firewalld.service
 systemctl restart firewalld.service
+
+
+firewall-cmd --add-interface=$ETH
+firewall-cmd --zone=public --add-interface=wg0
+firewall-cmd --add-masquerade  --zone=public --permanent
+firewall-cmd --add-port=1701/udp --permanent
+firewall-cmd --add-port=4500/udp --permanent
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.8.8.0/24
+firewall-cmd --permanent --add-port=0-65535/udp --zone=public
+firewall-cmd --reload
+
+
+
+
+
+
 
 echo "1" > /proc/sys/net/ipv4/ip_forward
 echo "net.ipv4.conf.default.rp_filter = 0" >> /etc/sysctl.conf
@@ -111,7 +126,7 @@ sysctl -p
 
 
 
-cat > /etc/wireguard/wg0.conf >>EOF
+cat > /etc/wireguard/wg0.conf <<-EOF
 [Interface]
 PrivateKey = $s1
 Address = 10.0.0.1/24 
@@ -157,7 +172,7 @@ newnum=$((10#${ipnum}+1))
 sed -i 's%^PrivateKey.*$%'"PrivateKey = $(cat temprikey)"'%' $newname.conf
 sed -i 's%^Address.*$%'"Address = 10.0.0.$newnum\/24"'%' $newname.conf
 
-cat >> /etc/wireguard/wg0.conf >>EOF
+cat > /etc/wireguard/wg0.conf <<-EOF
 [Peer]
 PublicKey = $(cat tempubkey)
 AllowedIPs = 10.0.0.$newnum/24
@@ -233,4 +248,4 @@ start_menu
 4. 卸载wireguard
 5. 显示客户端二维码
 6. 增长用户
-0. 退出js
+0. 退出
