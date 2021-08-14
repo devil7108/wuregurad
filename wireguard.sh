@@ -61,13 +61,11 @@ EOF
 
 }
 
-#centos7wireguard
+#centos7-8wireguard
 
 wireguard_install(){
 
 curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-8/jdoss-wireguard-epel-8.repo
-curl -Lo /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-curl -Lo /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/repo/Centos-7.repo
 yum install -y gcc-c++ gcc-gfortran glibc glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel bash-completion
 yum install wireguard-dkms wireguard-tools kmod-wireguard dkms
 mkdir /etc/wireguard
@@ -182,7 +180,7 @@ rm -f temprikey tempubkey
 start_menu(){
 clear
 echo "========================="
-echo " 介绍：适用于CentOS7"
+echo " 介绍：适用于CentOS7-8"
 echo " 网站：www.110-999-911.xyz"
 echo "========================="
 echo "1. 升级系统内核"
@@ -209,7 +207,7 @@ case "$num" in
 	;;
 	5)
 	content=$(cat /etc/wireguard/client.conf)
-	echo "${content}" | qrencode -o -t UTF8
+	echo "${content}" | qrencode -o --t UTF8
 	;;
 	6)
 	add_user
@@ -229,9 +227,9 @@ esac
 start_menu
 把上面的代码复制到脚步文件如install
 
-# ./install_wireguard.sh 
+# ./wireguard.sh 
 =========================
-介绍：适用于CentOS7
+介绍：适用于CentOS7-8
 做者：Linuax fans
 网站：www.110-999-911.xyz
 =========================
