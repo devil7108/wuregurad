@@ -5,7 +5,7 @@ update_kernel(){
                  
                  yum -y update
                  yum -y elrepo-release
-                 yum -y install firewalld net-tools curl git wget vim qrencode make losf libreswan Networkmanager glibc
+                 yum -y install net-tools curl git wget vim qrencode make losf libreswan
                  
 sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
 yum remove -y kernel-devel
@@ -93,27 +93,19 @@ port=$(rand 10000 60000)
 
 eth=$(ls /sys/class/net | awk '/^e/{print}')
 
-chmod 777 -R /etc/wireguard
-
-systemctl enable firewalld.service
-systemctl restart firewalld.service
-
 
 firewall-cmd --add-interface=$ETH
 firewall-cmd --zone=public --add-interface=wg0
 firewall-cmd --add-masquerade  --zone=public --permanent
 firewall-cmd --add-port=1701/udp --permanent
 firewall-cmd --add-port=4500/udp --permanent
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.8.8.0/24
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.6.8.0/24
 firewall-cmd --permanent --add-port=0-65535/udp --zone=public
 firewall-cmd --reload
 
-
-
-
-
-
-
+chmod 777 -R /etc/wireguard
+systemctl enable firewalld.service
+systemctl status firewalld.service
 echo "1" > /proc/sys/net/ipv4/ip_forward
 echo "net.ipv4.conf.default.rp_filter = 0" >> /etc/sysctl.conf
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
@@ -124,7 +116,7 @@ echo "net.ipv4.conf.default.accept_source_route = 0" >> /etc/sysctl.conf
 echo "net.ipv4.conf.all.accept_redirects = 0" >> /etc/sysctl.conf
 sysctl -p
 
-
+config_service
 
 cat > /etc/wireguard/wg0.conf <<-EOF
 [Interface]
@@ -141,8 +133,6 @@ PublicKey = $c2
 AllowedIPs = 10.0.0.2/32
 PersistentKeepalive = 25
 EOF
-
-config_client
 
 wg-quick up wg0
 wg-quick down wg0
