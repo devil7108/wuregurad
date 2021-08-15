@@ -48,14 +48,14 @@ cat >> /etc/ppp/chap-secrets <<END
 $NAME pptpd $PASS *
 END
 
-cat >/etc/pptpd.conf <<END
+cat >> /etc/pptpd.conf <<END
 option /etc/ppp/options.pptpd
 #logwtmp
 localip 192.168.1.1
 remoteip 192.168.1.10-100
 END
 
-cat >/etc/ppp/options.pptpd <<END
+cat > /etc/ppp/options.pptpd <<END
 name pptpd
 refuse-pap
 refuse-chap
@@ -85,12 +85,12 @@ firewall-cmd --add-port=1723/tcp --permanent
 firewall-cmd --add-masquerade --permanent
 firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -i $ETH -p gre -j ACCEPT
 firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUER
-firewall-cmd --permanent --add-port=0-65535/udp --zone=public
+firewall-cmd --permanent --add-port=0-65535/tcp --zone=public
 firewall-cmd --reload
 
 
 
-echo "1" > /proc/sys/net/ipv4/ip_forward
+
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sysctl -p
 
@@ -102,7 +102,7 @@ systemctl enable pptpd.service
 systemctl startus pptpd.service
 
 chmod +777 /etc/ppp/ip-up.local
-cat > /etc/ppp/ip-up.local << END
+cat >> /etc/ppp/ip-up.local <<END
 /sbin/ifconfig $1 mtu 1400
 END
 
