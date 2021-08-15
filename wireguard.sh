@@ -2,9 +2,11 @@
 #更新内核
 update_kernel(){
  
-    yum -y install epel-release curl wget git
+    yum -y install epel-release curl git vim wget
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     yum remove -y kernel-devel
+    rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-5.el7.elrepo.noarch.rpm
+    rpm --import http://elrepo.org/elrepo-release-7.0-5.el7.elrepo.noarch.rpm
     rpm -Uvh http://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
     rpm --import http://elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
     yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
@@ -61,9 +63,11 @@ EOF
 
 wireguard_install(){
 
+curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
+
 curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-8/jdoss-wireguard-epel-8.repo
 
-yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel  qrencode wget git bash-completion
+yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel qrencode bash-completion
 
 yum install wireguard-dkms wireguard-tools kmod-wireguard
  
@@ -83,8 +87,6 @@ c1=$(cat cprivatekey)
 
 c2=$(cat cpublickey)
 
-serverip=$(curl ipv4.icanhazip.com)
-
 port=$(rand 10000 60000)
 
 eth=$(ls /sys/class/net | awk '/^e/{print}')
@@ -99,9 +101,7 @@ firewall-cmd --set-default-zone=public
 firewall-cmd --add-interface=$ETH
 firewall-cmd --zone=public --add-interface=wg0
 firewall-cmd --add-masquerade  --zone=public --permanent
-firewall-cmd --add-port=1701/udp --permanent
-firewall-cmd --add-port=4500/udp --permanent
-firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.7.7.7/24
+firewall-cmd --permanent --direct --passthrough ipv4 -t nat -I POSTROUTING -o eth0 -j MASQUERADE -s 10.8.8.0/24
 firewall-cmd --permanent --add-port=0-65535/udp --zone=public
 firewall-cmd --reload
 
@@ -128,7 +128,7 @@ AllowedIPs = 10.0.0.2/32
 PersistentKeepalive = 25
 EOF
 
-config_client
+config_service
 
 wg-quick up wg0
 
@@ -170,7 +170,7 @@ sed -i 's%^PrivateKey.*$%'"PrivateKey = $(cat temprikey)"'%' $newname.conf
 
 sed -i 's%^Address.*$%'"Address = 10.0.0.$newnum\/24"'%' $newname.conf
 
-cat >> /etc/wireguard/wg0.conf <<-EOF
+cat > /etc/wireguard/wg0.conf <<-EOF
 
 [Peer]
 PublicKey = $(cat tempubkey)
@@ -190,8 +190,8 @@ rm -f temprikey tempubkey
 start_menu(){
     clear
     echo "========================="
-    echo " 介绍：CentOS8"
-    echo " 网站：www.fson.net"
+    echo " 介绍：适用于CentOS7"
+    echo " 网站：www.FLFD.xyz"
     echo "========================="
     echo "1. 升级系统内核"
     echo "2. 安装wireguard"
@@ -239,9 +239,9 @@ start_menu
 
 
 =========================
- 介绍：适用于CentOS8
- 做者：Linuas + Fans 
- 网站：www.fson.net
+ 介绍：适用于CentOS7
+ 做者：Linuax + FL
+ 网站：www.FLFD.xyz
 =========================
 1. 升级系统内核
 2. 安装wireguard
@@ -249,4 +249,4 @@ start_menu
 4. 卸载wireguard
 5. 显示客户端二维码
 6. 增长用户
-0. 退出
+0. 退出脚本
