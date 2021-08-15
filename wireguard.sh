@@ -1,7 +1,7 @@
 #/bin/bash
-#更新内核
-update_kernel(){
- 
+
+
+
     yum -y install epel-release curl wget git
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     yum remove -y kernel-devel
