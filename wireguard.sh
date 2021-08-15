@@ -146,7 +146,7 @@ content=$(cat /etc/wireguard/client.conf)
 
 echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
 
-echo "${content}" | qrencode -o - -t UTF8
+echo "${content}" | qrencode -o --t UTF8
 
 }
 
@@ -217,7 +217,7 @@ start_menu(){
 	;;
 	5)
 	content=$(cat /etc/wireguard/client.conf)
-    	echo "${content}" | qrencode -o - -t UTF8
+    	echo "${content}" | qrencode -o --t UTF8
 	;;
 	6)
 	add_user
@@ -249,4 +249,4 @@ start_menu
 4. 卸载wireguard
 5. 显示客户端二维码
 6. 增长用户
-0. 退出脚本
+0. 退出脚本   if you find clitent.conf to /etc/wiregurad with job that code√ serverip=$(curl ipv4.icanhazip.com).
