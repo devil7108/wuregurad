@@ -1,5 +1,6 @@
 #/bin/bash
 
+update_kernel(){
 
 
     yum -y install epel-release curl wget git
