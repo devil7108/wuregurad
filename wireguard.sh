@@ -5,8 +5,6 @@ update_kernel(){
     yum -y install epel-release curl git vim wget
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     yum remove -y kernel-devel
-    rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-5.el7.elrepo.noarch.rpm
-    rpm --import http://elrepo.org/elrepo-release-7.0-5.el7.elrepo.noarch.rpm
     rpm -Uvh http://www.elrepo.org/elrepo-release-8-11.el8.elrepo.noarch.rpm
     rpm --import http://elrepo.org/elrepo-release-8-11.el8.elrepo.noarch.rpm
     yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
@@ -59,11 +57,9 @@ EOF
 
 }
 
-#centos7-8wireguard
+#centos8wireguard
 
 wireguard_install(){
-
-curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
 
 curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-8/jdoss-wireguard-epel-8.repo
 
@@ -192,7 +188,7 @@ rm -f temprikey tempubkey
 start_menu(){
     clear
     echo "========================="
-    echo " 介绍：适用于CentOS7"
+    echo " 介绍：适用于CentOS8"
     echo " 网站：www.FLFD.xyz"
     echo "========================="
     echo "1. 升级系统内核"
@@ -241,7 +237,7 @@ start_menu
 
 
 =========================
- 介绍：适用于CentOS7
+ 介绍：适用于CentOS8
  做者：Linuax + FL
  网站：www.FLFD.xyz
 =========================
