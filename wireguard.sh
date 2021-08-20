@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 #更新内核
 update_kernel(){
  
@@ -90,6 +90,8 @@ c2=$(cat cpublickey)
 port=$(rand 10000 60000)
 
 eth=$(ls /sys/class/net | awk '/^e/{print}')
+
+serverip=$(curl ipv4.icanhazip.com)
 
 chmod 777 -R /etc/wireguard
 
@@ -249,4 +251,4 @@ start_menu
 4. 卸载wireguard
 5. 显示客户端二维码
 6. 增长用户
-0. 退出脚本   if you find clitent.conf to /etc/wiregurad with job that code√ serverip=$(curl ipv4.icanhazip.com).
+0. 退出脚本
