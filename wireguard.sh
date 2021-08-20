@@ -4,7 +4,6 @@ update_kernel(){
  
     yum -y install epel-release curl git vim wget
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
-    yum remove -y kernel-devel
     rpm -Uvh http://www.elrepo.org/elrepo-release-8-11.el8.elrepo.noarch.rpm
     rpm --import http://elrepo.org/elrepo-release-8-11.el8.elrepo.noarch.rpm
     yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
