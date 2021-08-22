@@ -4,8 +4,8 @@ update_kernel(){
  
     yum -y install epel-release curl git vim wget
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
-    rpm -Uvh http://www.elrepo.org/elrepo-release-8-11.el8.elrepo.noarch.rpm
-    rpm --import http://elrepo.org/elrepo-release-8-11.el8.elrepo.noarch.rpm
+    rpm -Uvh http://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+    rpm --import http://elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
     yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
     yum -y --enablerepo=elrepo-kernel install kernel-ml
     sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
