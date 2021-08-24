@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #更新内核
 update_kernel(){
  
@@ -40,6 +40,7 @@ wireguard_remove(){
 }
 
 config_client(){
+
 cat > /etc/wireguard/client.conf <<-EOF
 [Interface]
 PrivateKey = $c1
