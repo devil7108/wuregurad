@@ -1,5 +1,6 @@
 #!/bin/bash
 #更新内核
+
 update_kernel(){
  
     yum -y install epel-release curl git vim wget qrencode
@@ -54,6 +55,7 @@ Endpoint = $serverip:$port
 AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
+
 }
 
 #centos8wireguard
