@@ -1,10 +1,12 @@
 #!/bin/bash                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    #!/bin/bash
-#    Setup Simple  VPN server for CentOS 7 on LINUX- Unix system
+#    Setup Simple  VPN server for Unix system
 #    Copyright (C) 2015-2022  and contributors
 #
 #    BONJOURS VERSIONER THANK YOU D-C OR PC FOR PP.
 
 
+yum  -y update
+yum  -y install net-tools curl ppp pptpd git wget
 
 printhelp() {
 
@@ -32,9 +34,7 @@ done
 
 export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 clear
-
-            yum  -y update
-            yum  -y install firewalld net-tools curl ppp pptpd git wget dkms 
+            
 echo -e "You can now connect to your VPN via your external IP \033[32m${VPN_IP}\033[0m"
 echo -e "Username: \033[32m${NAME}\033[0m"
 echo -e "Password: \033[32m${PASS}\033[0m"
