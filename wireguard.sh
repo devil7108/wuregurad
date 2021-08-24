@@ -2,7 +2,7 @@
 #更新内核
 update_kernel(){
  
-    yum -y install epel-release curl git vim wget
+    yum -y install epel-release curl git vim wget qrencode
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     rpm -Uvh http://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
     rpm --import http://elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
@@ -53,7 +53,6 @@ Endpoint = $serverip:$port
 AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
-
 }
 
 #centos8wireguard
